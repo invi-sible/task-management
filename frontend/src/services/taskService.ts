@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API = 'http://localhost:3001';
+const API = 'https://tqr8x2adp8.execute-api.us-east-1.amazonaws.com/dev';
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token');

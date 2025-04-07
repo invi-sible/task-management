@@ -20,7 +20,7 @@ const Register: React.FC = () => {
     event.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:3001/register', {
+      const response = await axios.post('https://tqr8x2adp8.execute-api.us-east-1.amazonaws.com/dev/register', {
         username,
         password
       });

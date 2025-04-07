@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../services/taskService';
+import axios from 'axios';
 import { saveToken } from '../utils/authUtils';
 import {
   Card,
@@ -14,16 +14,25 @@ import {
 const Login: React.FC = () => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState<string>('');
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
-      const token = await login(username, password);
+      // Make the login API request using axios
+      const response = await axios.post('https://tqr8x2adp8.execute-api.us-east-1.amazonaws.com/dev/login', {
+        username,
+        password,
+      });
+
+      const token = response.data.token;
       saveToken(token);
       navigate('/');
-    } catch (error) {
-      alert('Login failed');
+    } catch (error: any) {
+      setErrorMessage('Login failed. Please check your credentials and try again.');
+      console.error(error);
     }
   };
 
@@ -48,6 +57,7 @@ const Login: React.FC = () => {
               margin="normal"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              required
             />
             <TextField
               fullWidth
@@ -57,7 +67,13 @@ const Login: React.FC = () => {
               margin="normal"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
+            {errorMessage && (
+              <Box mt={2}>
+                <Typography color="error">{errorMessage}</Typography>
+              </Box>
+            )}
             <Box mt={2}>
               <Button
                 type="submit"

@@ -4,7 +4,7 @@ info:
   description: API for managing tasks, users, and stats.
   version: 1.0.0
 servers:
-  - url: 'http://localhost:3001'
+  - url: 'https://tqr8x2adp8.execute-api.us-east-1.amazonaws.com/dev'
 paths:
   /login:
     post:
