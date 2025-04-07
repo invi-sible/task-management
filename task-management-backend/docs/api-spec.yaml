@@ -1,0 +1,159 @@
+openapi: 3.0.0
+info:
+  title: Task Management API
+  description: API for managing tasks, users, and stats.
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:3001'
+paths:
+  /login:
+    post:
+      summary: Login to the system and obtain a JWT token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: 'test_user'
+                password:
+                  type: string
+                  example: 'test_password'
+      responses:
+        '200':
+          description: Login successful, returns a JWT token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: 'JWT_TOKEN_HERE'
+        '401':
+          description: Invalid credentials.
+
+  /register:
+    post:
+      summary: Register a new user.
+      description: Endpoint to create a new user.
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: 'new_user'
+                password:
+                  type: string
+                  example: 'new_password'
+      responses:
+        '201':
+          description: User successfully registered.
+        '400':
+          description: Missing or invalid user data.
+
+  /tasks:
+    get:
+      summary: Retrieve all tasks for the logged-in user.
+      description: Endpoint to get a list of tasks.
+      operationId: getTasks
+      responses:
+        '200':
+          description: List of tasks.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                      example: 'task_id_here'
+                    title:
+                      type: string
+                      example: 'Task Title'
+                    description:
+                      type: string
+                      example: 'Task Description'
+                    status:
+                      type: string
+                      example: 'in-progress'
+        '401':
+          description: Unauthorized, invalid token.
+
+  /tasks/{id}:
+    put:
+      summary: Update the status of a task.
+      description: Endpoint to update the status of an existing task.
+      operationId: updateTask
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The task ID to update.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: 'completed'
+      responses:
+        '200':
+          description: Task updated successfully.
+        '404':
+          description: Task not found.
+
+  /tasks/{id}:
+    delete:
+      summary: Delete a task by ID.
+      description: Endpoint to delete a specific task.
+      operationId: deleteTask
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The task ID to delete.
+      responses:
+        '200':
+          description: Task deleted successfully.
+        '404':
+          description: Task not found.
+
+  /stats:
+    get:
+      summary: Retrieve task statistics.
+      description: Endpoint to get stats about tasks (e.g., count by status).
+      operationId: getStats
+      responses:
+        '200':
+          description: Task statistics.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: 'in-progress'
+                    count:
+                      type: integer
+                      example: 5

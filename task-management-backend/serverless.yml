@@ -1,0 +1,74 @@
+service: task-management-backend
+
+org: joelsteiner
+app: task-app  
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: us-east-1
+  environment:
+    MONGO_URI: "mongodb://localhost:27017/taskdb"
+
+functions:
+  getTasks:
+    handler: handler.get_tasks
+    events:
+      - http:
+          path: tasks
+          method: get
+  createTask:
+    handler: handler.create_task
+    events:
+      - http:
+          path: tasks
+          method: post
+  updateTask:
+    handler: handler.update_task
+    events:
+      - http:
+          path: tasks/{id}
+          method: put
+  deleteTask:
+    handler: handler.delete_task
+    events:
+      - http:
+          path: tasks/{id}
+          method: delete
+  login:
+    handler: handler.login
+    events:
+      - http:
+          path: login
+          method: post
+  register:
+    handler: handler.register
+    events:
+      - http:
+          path: register
+          method: post
+  getStats:
+    handler: handler.get_stats
+    events:
+      - http:
+          path: stats
+          method: get
+
+resources:
+  Resources:
+    ApiGatewayRestApi:
+      Type: AWS::ApiGateway::RestApi
+      Properties:
+        Body:
+          Fn::Transform:
+            Name: AWS::Include
+            Parameters:
+              Location: ./docs/api-spec.yaml
+        Name: TaskManagementApi
+        FailOnWarnings: 'true'
+
+plugins:
+  - serverless-offline
+custom:
+  serverless-offline:
+    httpPort: 3001
